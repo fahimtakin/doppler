@@ -1,5 +1,6 @@
 import React from "react";
 import { TouchableOpacity, View, Text, StyleSheet } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
 
 const SongItem = ({ song, onPress, isFavorite, onToggleFavorite }) => {
   return (
@@ -7,7 +8,11 @@ const SongItem = ({ song, onPress, isFavorite, onToggleFavorite }) => {
       <Text>{song.title.toString()}</Text>
       {
         <TouchableOpacity onPress={onToggleFavorite} style={styles.favoriteBtn}>
-          <Text style={styles.favoriteIcon}>{isFavorite ? "❤️" : "🤍"}</Text>
+          <Ionicons
+            name="heart-sharp"
+            size={24}
+            color={isFavorite ? "white" : "red"}
+          />
         </TouchableOpacity>
       }
     </TouchableOpacity>

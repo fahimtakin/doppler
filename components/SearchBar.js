@@ -20,7 +20,7 @@ export default function SearchBar({ query, setQuery, onSettingsPress }) {
         style={styles.SearchInput}
       />
       <TouchableOpacity style={styles.gearButton} onPress={onSettingsPress}>
-        <Ionicons name="settings-sharp" size={24} color="white" />
+        <Ionicons name="settings-sharp" size={24} color="black" />
       </TouchableOpacity>
     </View>
   );
@@ -42,7 +42,7 @@ const styles = StyleSheet.create({
   },
   gearButton: {
     padding: 8,
-    backgroundColor: "#010305ff",
+    backgroundColor: "#ffffffff",
     borderRadius: 10,
     justifyContent: "center",
     alignItems: "center",

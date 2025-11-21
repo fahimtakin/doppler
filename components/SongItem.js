@@ -1,55 +1,45 @@
 import React from "react";
 import { TouchableOpacity, View, Text, StyleSheet } from "react-native";
 
-export default function SongItem({
-  song,
-  onPress,
-  isFavorite,
-  onToggleFavorite,
-}) {
+const SongItem = ({ song, onPress, isFavorite, onToggleFavorite }) => {
   return (
     <TouchableOpacity style={styles.container} onPress={onPress}>
-      <View style={styles.textContainer}>
-        <Text style={styles.songName}>{song.name}</Text>
-        <Text style={styles.songDetails}>
-          {song.artist || "Unknown Artist"}
-        </Text>
-      </View>
-
-      {onToggleFavorite && (
-        <TouchableOpacity
-          onPress={onToggleFavorite}
-          style={styles.favoriteButton}
-        >
-          <Text style={{ fontSize: 18 }}>{isFavorite ? "❤️" : "🤍"}</Text>
+      <Text>{song.title.toString()}</Text>
+      {
+        <TouchableOpacity onPress={onToggleFavorite} style={styles.favoriteBtn}>
+          <Text style={styles.favoriteIcon}>{isFavorite ? "❤️" : "🤍"}</Text>
         </TouchableOpacity>
-      )}
+      }
     </TouchableOpacity>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {
     flexDirection: "row",
+    justifyContent: "space-between",
     alignItems: "center",
     padding: 12,
-    borderBottomWidth: 1,
-    borderBottomColor: "#ddd",
-    justifyContent: "space-between",
+    backgroundColor: "#e1d9d9ff",
+    marginVertical: 4,
+    borderRadius: 10,
+    width: "100%",
   },
-  textContainer: {
-    flex: 1,
-    marginRight: 10,
-  },
-  songName: {
+
+  songTitle: {
     fontSize: 16,
     fontWeight: "bold",
   },
-  songDetails: {
-    fontSize: 12,
+  artist: {
+    fontSize: 14,
     color: "#555",
   },
-  favoriteButton: {
+  favoriteBtn: {
     padding: 8,
   },
+  favoriteIcon: {
+    fontSize: 20,
+  },
 });
+
+export default SongItem;

@@ -6,6 +6,8 @@ import SongList from '../components/SongList';
 
 const audioSource = require('../assets/song.mp3');
 
+import {songs} from "../assets/dummySongs";
+
 
 const HomeScreen = () => {
     const player = useAudioPlayer(audioSource);
@@ -13,13 +15,13 @@ const HomeScreen = () => {
   return (
     <View style={styles.container}>
     <SearchBar/>
-    <SongList songs={[]} onSongPress={() => {}} />
-     <Pressable style={styles.btn} onPress={() => {
+    <SongList songs={songs} onSongPress={() => {}} />
+     {/* <Pressable style={styles.btn} onPress={() => {
         player.seekTo(0)
         // player.play()
         }}>
       <Text style={styles.btnText}>Click Meee</Text>
-    </Pressable>
+    </Pressable> */}
     </View>
   );
 };

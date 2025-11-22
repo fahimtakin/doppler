@@ -9,6 +9,8 @@ export default function PlaybackControls({
   isPlaying,
   loopMode,
   onLoopToggle,
+  isFavorite,
+  onToggleFavorite,
 }) {
   return (
     <View style={styles.container}>
@@ -31,16 +33,28 @@ export default function PlaybackControls({
       <TouchableOpacity onPress={onLoopToggle}>
         <Ionicons
           name={
-            loopMode === "off"
-              ? "repeat"
-              : loopMode === "one"
+            loopMode === "one"
               ? "repeat-one"
-              : "repeat"
+              : loopMode === "all"
+              ? "repeat"
+              : loopMode === "shuffle"
+              ? "shuffle"
+              : "repeat" // default for "off"
           }
-          size={28}
-          color={loopMode === "off" ? "#fff" : "#1DB954"}
+          color={loopMode === "off" ? "gray" : "dodgerblue"}
+          size={24}
         />
       </TouchableOpacity>
+
+      {
+        <TouchableOpacity onPress={onToggleFavorite} style={styles.favoriteBtn}>
+          <Ionicons
+            name="heart-sharp"
+            size={28}
+            color={isFavorite ? "white" : "red"}
+          />
+        </TouchableOpacity>
+      }
     </View>
   );
 }

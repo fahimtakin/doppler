@@ -3,24 +3,33 @@ import { View, Text, StyleSheet, Pressable } from "react-native";
 import { useAudioPlayer } from "expo-audio";
 import SearchBar from "../components/SearchBar";
 import SongList from "../components/SongList";
-
 const audioSource = require("../assets/song.mp3");
 import { useNavigation } from "@react-navigation/native";
-
-import { songs } from "../assets/dummySongs";
-const song = songs[0];
+import { usePlayer } from "../context/PlayerContext";
 
 const HomeScreen = () => {
+  const { playlist, currentIndex } = usePlayer();
+
   // const player = useAudioPlayer(audioSource);
   const navigation = useNavigation();
 
   return (
     <View style={styles.container}>
-      <SearchBar />
+      <SearchBar
+        onSettingsPress={() => {
+          return navigation.navigate("Player", {
+            song: playlist[currentIndex],
+            songList: playlist,
+          });
+        }}
+      />
       <SongList
-        songs={songs}
+        songs={playlist}
         onSongPress={() => {
-          return navigation.navigate("Player", { song: song, songList: songs });
+          return navigation.navigate("Player", {
+            song: playlist[currentIndex],
+            songList: playlist,
+          });
         }}
       />
       {/* <Pressable style={styles.btn} onPress={() => {

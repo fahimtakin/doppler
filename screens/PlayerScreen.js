@@ -1,57 +1,91 @@
-import React, { useState, useEffect } from "react";
 import { View, Text, StyleSheet } from "react-native";
-import { useAudioPlayer, useAudioPlayerStatus } from "expo-audio";
 import PlaybackControls from "../components/PlaybackControls";
 import ProgressBar from "../components/ProgressBar";
+import { usePlayer } from "../context/PlayerContext";
 
 export default function PlayerScreen({ route }) {
-  const { song, songList } = route.params;
+  const {
+    playlist,
+    currentIndex,
+    status,
+    togglePlayPause,
+    nextTrack,
+    previousTrack,
+    onSlide,
+    loopMode,
+    setLoopMode,
+  } = usePlayer();
 
-  // Current index
-  const [currentIndex, setCurrentIndex] = useState(
-    songList.findIndex((s) => s.id === song.id)
-  );
+  // const { song, songList } = route.params;
 
-  // Create the audio player ONCE (initial empty)
-  const player = useAudioPlayer(null);
+  // // Current index
+  // const [currentIndex, setCurrentIndex] = useState(
+  //   songList.findIndex((s) => s.id === song.id)
+  // );
 
-  // Listen to playback status
-  const status = useAudioPlayerStatus(player);
+  // const [loopMode, setLoopMode] = useState("off");
 
-  // Load the audio whenever currentIndex changes
-  useEffect(() => {
-    const source = { uri: songList[currentIndex].uri };
-    player.replace(source);
-  }, [currentIndex]);
+  // // Create the audio player ONCE (initial empty)
+  // const player = useAudioPlayer(null);
 
-  // Play/Pause
-  const handlePlayPause = () => {
-    if (!status.isLoaded) return;
+  // // Listen to playback status
+  // const status = useAudioPlayerStatus(player);
 
-    if (status.playing) player.pause();
-    else player.play();
-  };
+  // // Load the audio whenever currentIndex changes
+  // useEffect(() => {
+  //   const source = { uri: songList[currentIndex].uri };
+  //   player.replace(source);
+  // }, [currentIndex]);
 
-  // Next
-  const handleNext = () => {
-    let next = currentIndex + 1;
-    if (next >= songList.length) return;
-    setCurrentIndex(next);
-  };
+  // const handleLoopToggle = () => {
+  //   if (loopMode === "off") {
+  //     setLoopMode("one");
+  //     player.loop = true;
+  //   } else if (loopMode === "one") {
+  //     setLoopMode("all");
+  //     player.addListener("playbackStatusUpdate", (status) => {
+  //       if (status.didJustFinish) {
+  //         handleTrackEnd();
+  //       }
+  //     });
+  //   } else setLoopMode("off");
+  // };
 
-  // Prev
-  const handlePrevious = () => {
-    let prev = currentIndex - 1;
-    if (prev < 0) return;
-    setCurrentIndex(prev);
-  };
+  // const handleTrackEnd = () => {
+  //   const nextIndex = (currentIndex + 1) % playlist.length;
+  //   setCurrentIndex(nextIndex);
 
-  // Seek slider
-  const onSlide = (val) => player.seekTo(val / 1000); // expo-audio uses seconds
+  //   player.replace({ uri: playlist[nextIndex].uri });
+  //   player.play();
+  // };
+  // // Play/Pause
+  // const handlePlayPause = () => {
+  //   if (!status.isLoaded) return;
+
+  //   if (status.playing) player.pause();
+  //   else player.play();
+  // };
+
+  // // Next
+  // const handleNext = () => {
+  //   let next = currentIndex + 1;
+  //   if (next >= songList.length) return;
+  //   setCurrentIndex(next);
+  // };
+
+  // // Prev
+  // const handlePrevious = () => {
+  //   let prev = currentIndex - 1;
+  //   if (prev < 0) return;
+  //   setCurrentIndex(prev);
+  // };
+
+  // // Seek slider
+  // const onSlide = (val) => player.seekTo(val / 1000); // expo-audio uses seconds
 
   return (
     <View style={styles.container}>
-      <Text style={styles.songTitle}>{songList[currentIndex].title}</Text>
+      <Text style={styles.songTitle}>{playlist[currentIndex].title}</Text>
 
       <ProgressBar
         position={(status.currentTime || 0) * 1000}
@@ -61,11 +95,11 @@ export default function PlayerScreen({ route }) {
 
       <PlaybackControls
         isPlaying={status.playing}
-        onPlayPause={handlePlayPause}
-        onNext={handleNext}
-        onPrevious={handlePrevious}
-        loopMode={status.loop ? "one" : "off"}
-        onLoopToggle={() => (player.loop = !player.loop)}
+        onPlayPause={togglePlayPause}
+        onNext={nextTrack}
+        onPrevious={previousTrack}
+        loopMode={loopMode}
+        onLoopToggle={setLoopMode}
       />
     </View>
   );

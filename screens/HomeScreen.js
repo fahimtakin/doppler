@@ -6,7 +6,7 @@ import SongList from "../components/SongList";
 const audioSource = require("../assets/song.mp3");
 import { useNavigation } from "@react-navigation/native";
 import { usePlayer } from "../context/PlayerContext";
-
+import MiniPlayer from "../components/MiniPlayer";
 const HomeScreen = () => {
   const { playlist, currentIndex } = usePlayer();
 
@@ -17,7 +17,7 @@ const HomeScreen = () => {
     <View style={styles.container}>
       <SearchBar
         onSettingsPress={() => {
-          return navigation.navigate("Player", {
+          return navigation.navigate("Settings", {
             song: playlist[currentIndex],
             songList: playlist,
           });
@@ -38,6 +38,7 @@ const HomeScreen = () => {
         }}>
       <Text style={styles.btnText}>Click Meee</Text>
     </Pressable> */}
+      <MiniPlayer />
     </View>
   );
 };

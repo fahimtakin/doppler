@@ -1,4 +1,10 @@
-import React, { createContext, useContext, useState, useEffect } from "react";
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  useRef,
+} from "react";
 import { useAudioPlayer, useAudioPlayerStatus } from "expo-audio";
 import { songs } from "../assets/dummySongs";
 
@@ -10,6 +16,8 @@ export const PlayerProvider = ({ children }) => {
   const [playlist, setPlaylist] = useState(songs);
   const player = useAudioPlayer(null);
   const status = useAudioPlayerStatus(player);
+  const [sleepTimer, setSleepTimer] = useState(null); // in minutes
+  const timerRef = useRef(null); // store the timeout reference
 
   // Load current track whenever currentIndex changes
   useEffect(() => {
@@ -60,6 +68,22 @@ export const PlayerProvider = ({ children }) => {
     if (playlist.length === 0) return;
     setCurrentIndex((prev) => (prev - 1 + playlist.length) % playlist.length);
   };
+
+  // Sleep timer effect
+  useEffect(() => {
+    if (sleepTimer && sleepTimer > 0) {
+      if (timerRef.current) clearTimeout(timerRef.current);
+
+      timerRef.current = setTimeout(() => {
+        player.pause(); // stop playback when timer ends
+        setSleepTimer(null);
+      }, sleepTimer * 60 * 1000); // convert minutes to ms
+    }
+
+    return () => {
+      if (timerRef.current) clearTimeout(timerRef.current);
+    };
+  }, [sleepTimer]);
 
   return (
     <PlayerContext.Provider

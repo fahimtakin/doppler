@@ -1,11 +1,13 @@
 import { StatusBar } from "expo-status-bar";
-import { StyleSheet, Text, View } from "react-native";
+import { Settings, StyleSheet, Text, View } from "react-native";
 import PlayerScreen from "./screens/PlayerScreen";
 import HomeScreen from "./screens/HomeScreen";
 import * as React from "react";
 import { createStaticNavigation } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { PlayerProvider } from "./context/PlayerContext";
+import SettingsScreen from "./screens/SettingsScreen";
+
 
 const RootStack = createNativeStackNavigator({
   screens: {
@@ -14,6 +16,9 @@ const RootStack = createNativeStackNavigator({
     },
     Player: {
       screen: PlayerScreen,
+    },
+    Settings: {
+      screen: SettingsScreen,
     },
   },
 });

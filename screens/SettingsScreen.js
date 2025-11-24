@@ -3,7 +3,8 @@ import { View, Text, TextInput, Button, StyleSheet, Alert } from "react-native";
 import { usePlayer } from "../context/PlayerContext";
 
 export default function SettingsScreen() {
-  const { setSleepTimer, setPlaylist, playlist } = usePlayer();
+  const { setSleepTimer, setPlaylist, playlist, importLocalSongs } =
+    usePlayer();
   const [timerMinutes, setTimerMinutes] = useState("");
 
   const handleSetTimer = () => {
@@ -17,26 +18,14 @@ export default function SettingsScreen() {
     setTimerMinutes("");
   };
 
-  //   const handleAddLocalSong = async () => {
-  //     try {
-  //       const result = await DocumentPicker.getDocumentAsync({
-  //         type: "audio/*",
-  //       });
-
-  //       if (result.type === "success") {
-  //         const newSong = {
-  //           id: playlist.length + 1,
-  //           title: result.name,
-  //           uri: result.uri,
-  //         };
-  //         setPlaylist([...playlist, newSong]);
-  //         Alert.alert("Song Added", `${result.name} added to playlist`);
-  //       }
-  //     } catch (err) {
-  //       console.log(err);
-  //       Alert.alert("Error", "Could not add song");
-  //     }
-  //   };
+  const handleAddLocalSong = async () => {
+    try {
+      await importLocalSongs();
+    } catch (err) {
+      console.log(err);
+      Alert.alert("Error", "Could not add song");
+    }
+  };
 
   return (
     <View style={styles.container}>
@@ -52,7 +41,7 @@ export default function SettingsScreen() {
 
       <View style={{ height: 30 }} />
 
-      <Button title="Add Local Song" />
+      <Button title="Add Local Song" onPress={handleAddLocalSong} />
     </View>
   );
 }

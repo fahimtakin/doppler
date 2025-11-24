@@ -6,24 +6,32 @@ import React, {
   useRef,
 } from "react";
 import { useAudioPlayer, useAudioPlayerStatus } from "expo-audio";
-import { songs } from "../assets/dummySongs";
+import { scanSongs } from "../utils/scanSongs";
 
 const PlayerContext = createContext();
 
 export const PlayerProvider = ({ children }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [loopMode, setLoopMode] = useState("off"); // "off" | "one" | "all"
-  const [playlist, setPlaylist] = useState(songs);
-  const player = useAudioPlayer(null);
+  const [playlist, setPlaylist] = useState([]);
+  const player = useAudioPlayer();
   const status = useAudioPlayerStatus(player);
   const [sleepTimer, setSleepTimer] = useState(null); // in minutes
   const timerRef = useRef(null); // store the timeout reference
+
+  const importLocalSongs = async () => {
+    const newSongs = await scanSongs();
+    if (newSongs.length > 0) {
+      setPlaylist((prev) => [...prev, ...newSongs]);
+    }
+  };
 
   // Load current track whenever currentIndex changes
   useEffect(() => {
     if (playlist.length > 0) {
       const source = { uri: playlist[currentIndex].uri };
       player.replace(source);
+      player.play();
     }
   }, [currentIndex, playlist]);
 
@@ -55,7 +63,7 @@ export const PlayerProvider = ({ children }) => {
 
   // Play / Pause toggle
   const togglePlayPause = () => {
-    if (!status.isLoaded) return;
+    // if (!status.isLoaded) return;
     status.playing ? player.pause() : player.play();
   };
 
@@ -100,6 +108,7 @@ export const PlayerProvider = ({ children }) => {
         togglePlayPause,
         nextTrack,
         previousTrack,
+        importLocalSongs,
       }}
     >
       {children}

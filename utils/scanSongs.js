@@ -4,24 +4,21 @@ export const scanSongs = async () => {
   try {
     const result = await DocumentPicker.getDocumentAsync({
       type: "audio/*",
-      multiple: false,
+      multiple: true,
     });
 
-    if (result.type === "cancel" || result.canceled) {
+    if (result.canceled) {
       return [];
     }
 
-   
-    const file = result.assets?.[0] || result;
-
-    const song = {
-      id: file.uri || file.name, // fallback if uri missing
+    const songs = (result.assets || []).map((file) => ({
+      id: file.uri || file.name,
       title: file.name || "Unknown",
       uri: file.uri,
       duration: 0,
-    };
+    }));
 
-    return [song];
+    return songs;
   } catch (err) {
     console.error("Error picking song:", err);
     return [];

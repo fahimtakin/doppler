@@ -1,69 +1,87 @@
 import React from "react";
-import { View, TouchableOpacity, StyleSheet } from "react-native";
+import { Pressable, StyleSheet, View } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import IconButton from "./IconButton";
+import { colors } from "../theme";
+
+const REPEAT_LABELS = {
+  off: "Repeat off",
+  all: "Repeat all",
+  one: "Repeat one",
+};
 
 export default function PlaybackControls({
+  isPlaying,
+  shuffle,
+  repeat,
   onPlayPause,
   onNext,
   onPrevious,
-  isPlaying,
-  loopMode,
-  onLoopToggle,
-  isFavorite,
-  onToggleFavorite,
+  onToggleShuffle,
+  onCycleRepeat,
 }) {
   return (
-    <View style={styles.container}>
-      <TouchableOpacity onPress={onPrevious}>
-        <Ionicons name="play-skip-back" size={32} color="#fff" />
-      </TouchableOpacity>
+    <View style={styles.row}>
+      <IconButton
+        name="shuffle"
+        size={24}
+        color={shuffle ? colors.accent : colors.textMuted}
+        onPress={onToggleShuffle}
+        label={shuffle ? "Shuffle on" : "Shuffle off"}
+      />
+      <IconButton name="play-skip-back" size={34} onPress={onPrevious} label="Previous" />
 
-      <TouchableOpacity onPress={onPlayPause}>
+      <Pressable
+        onPress={onPlayPause}
+        style={({ pressed }) => [styles.play, pressed && { transform: [{ scale: 0.95 }] }]}
+        accessibilityRole="button"
+        accessibilityLabel={isPlaying ? "Pause" : "Play"}
+      >
         <Ionicons
-          name={isPlaying ? "pause-circle" : "play-circle"}
-          size={48}
-          color="#1DB954"
+          name={isPlaying ? "pause" : "play"}
+          size={34}
+          color="#000"
+          style={!isPlaying && { marginLeft: 4 }}
         />
-      </TouchableOpacity>
+      </Pressable>
 
-      <TouchableOpacity onPress={onNext}>
-        <Ionicons name="play-skip-forward" size={32} color="#fff" />
-      </TouchableOpacity>
-
-      <TouchableOpacity onPress={onLoopToggle}>
-        <Ionicons
-          name={
-            loopMode === "one"
-              ? "repeat-one"
-              : loopMode === "all"
-              ? "repeat"
-              : loopMode === "shuffle"
-              ? "shuffle"
-              : "repeat" // default for "off"
-          }
-          color={loopMode === "off" ? "gray" : "dodgerblue"}
+      <IconButton name="play-skip-forward" size={34} onPress={onNext} label="Next" />
+      <View>
+        <IconButton
+          name="repeat"
           size={24}
+          color={repeat === "off" ? colors.textMuted : colors.accent}
+          onPress={onCycleRepeat}
+          label={REPEAT_LABELS[repeat]}
         />
-      </TouchableOpacity>
-
-      {
-        <TouchableOpacity onPress={onToggleFavorite} style={styles.favoriteBtn}>
-          <Ionicons
-            name="heart-sharp"
-            size={28}
-            color={isFavorite ? "white" : "red"}
-          />
-        </TouchableOpacity>
-      }
+        {repeat === "one" && <View style={styles.oneBadge} pointerEvents="none" />}
+      </View>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
+  row: {
     flexDirection: "row",
-    justifyContent: "space-around",
-    width: "80%",
     alignItems: "center",
+    justifyContent: "space-between",
+    width: "100%",
+  },
+  play: {
+    width: 72,
+    height: 72,
+    borderRadius: 36,
+    backgroundColor: colors.text,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  oneBadge: {
+    position: "absolute",
+    bottom: 6,
+    alignSelf: "center",
+    width: 5,
+    height: 5,
+    borderRadius: 3,
+    backgroundColor: colors.accent,
   },
 });

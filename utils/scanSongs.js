@@ -13,9 +13,10 @@ export const scanSongs = async () => {
 
     const songs = (result.assets || []).map((file) => ({
       id: file.uri || file.name,
-      title: file.name || "Unknown",
+      title: file.name.replace(/\.mp3$/i, "") || "Unknown",
       uri: file.uri,
       duration: 0,
+      isFavourite: false,
     }));
 
     return songs;
